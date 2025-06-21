@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-const colorPrincipal = Color(0xff4d7b30);
+const colorPrincipal = Color(0xff0a0aa9);
 const colorFondoField = Color(0xfff7f7f7);
-const colorGrisSecundario = Color(0xff619074);
-const colorComplementario = Color(0xff5e307b);
-const url = 'api.777chan.com';
+const colorGrisSecundario = Color(0xff4E4E98);
+const colorComplementario = Color(0xffA39B4C);
+const url = 'apipanama.777chan.com';
 
 SizedBox barraSuperior(
     BuildContext context, double height, String texto, double fontSize,
@@ -125,47 +125,26 @@ Widget drawerMenu(BuildContext context) {
   );
 }
 
-class MonedaInputFormatter extends TextInputFormatter {
-  //ARREGLAR EL QUE NO SE BORRA CORRECTAMENTE
-  final NumberFormat formatoMoneda;
-
-  MonedaInputFormatter({required this.formatoMoneda});
+class USCurrencyInputFormatter extends TextInputFormatter {
+  final NumberFormat formatter =
+  NumberFormat.currency(locale: 'en_US', symbol: '', decimalDigits: 2);
 
   @override
   TextEditingValue formatEditUpdate(
-    TextEditingValue oldValue,
-    TextEditingValue newValue,
-  ) {
-    if (newValue.text.isEmpty) {
-      return newValue;
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    String newText = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (newText.isEmpty) {
+      return newValue.copyWith(text: '');
     }
 
-    String textoLimpio = newValue.text.replaceAll(RegExp(r'[^\d]'), '');
-
-    if (textoLimpio.length <
-        oldValue.text.replaceAll(RegExp(r'[^\d]'), '').length) {
-      return newValue;
-    }
-
-    if (textoLimpio.isEmpty) {
-      return const TextEditingValue(
-        text: '',
-        selection: TextSelection.collapsed(offset: 0),
-      );
-    }
-
-    final numero = int.parse(textoLimpio);
-
-    final textoFormateado = formatoMoneda.format(numero);
-
-    final desplazamientoCursor = textoFormateado.length - textoLimpio.length;
-    final nuevaPosicionCursor =
-        (newValue.selection.baseOffset + desplazamientoCursor)
-            .clamp(0, textoFormateado.length);
+    double value = double.parse(newText) / 100;
+    final formatted = formatter.format(value);
 
     return TextEditingValue(
-      text: textoFormateado,
-      selection: TextSelection.collapsed(offset: nuevaPosicionCursor),
+      text: formatted,
+      selection:
+      TextSelection.collapsed(offset: formatted.length),
     );
   }
 }

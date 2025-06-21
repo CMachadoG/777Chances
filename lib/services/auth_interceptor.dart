@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:http_interceptor/http_interceptor.dart';
 import 'package:http/http.dart' as http;
 import 'auth_manager.dart';

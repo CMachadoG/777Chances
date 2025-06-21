@@ -6,7 +6,7 @@ import 'package:chances/services/api_service.dart'; // aquí tienes tu intercept
 
 class LoginService {
   Future<void> login(String username, String password) async {
-    final uri = Uri.https(url, 'api/login/authenticate');
+    final uri = Uri.https(url, '/api/login/authenticate');
 
     final response = await http.post(
       uri,

@@ -29,8 +29,7 @@ class JuegoScreenState extends State<JuegoScreen> {
     TextEditingController()
   ];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final formatoMoneda =
-      NumberFormat.currency(locale: 'es_CO', symbol: '\$', decimalDigits: 0);
+  final NumberFormat usFormatter = NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 2);
   String hintApuesta = "Apuesta";
 
   @override
@@ -203,7 +202,7 @@ class JuegoScreenState extends State<JuegoScreen> {
                     ),
                   ),
                   child: Text(
-                    "Apostar ${formatoMoneda.format(totalApuesta())}",
+                    "Apostar ${usFormatter.format(totalApuesta())}",
                     style: const TextStyle(color: Colors.white, fontSize: 25),
                   ),
                 ),
@@ -233,7 +232,8 @@ class JuegoScreenState extends State<JuegoScreen> {
               if (isNueva) {
                 if (_formKey.currentState?.validate() ?? false) {
                   final numero = _numeroControllers.last.text;
-                  final apuesta =(int.tryParse(_apuestaControllers.last.text) ?? 0);
+                  final apuesta =
+                      (int.tryParse(_apuestaControllers.last.text) ?? 0);
                   final combinado = _combinadoControllers.last.text;
 
                   final puedeGuardar = await validarTopes(
@@ -310,6 +310,7 @@ class JuegoScreenState extends State<JuegoScreen> {
 
   TextFormField inputApuesta(int index, bool isNueva) {
     return TextFormField(
+      inputFormatters: [USCurrencyInputFormatter()],
       controller:
           isNueva ? _apuestaControllers.last : _apuestaControllers[index],
       style: const TextStyle(fontSize: 20),
@@ -342,6 +343,7 @@ class JuegoScreenState extends State<JuegoScreen> {
 
   TextFormField inputCombinado(int index, bool isNueva) {
     return TextFormField(
+      inputFormatters: [USCurrencyInputFormatter()],
       controller:
           isNueva ? _combinadoControllers.last : _combinadoControllers[index],
       style: const TextStyle(fontSize: 20),
@@ -366,18 +368,17 @@ class JuegoScreenState extends State<JuegoScreen> {
     );
   }
 
-  int totalApuesta() {
-    int apuesta = 0;
+  double totalApuesta() {
+    double apuesta = 0;
     for (var juego in juegos) {
-      int apuestaValor = int.tryParse(juego['apuesta'] ?? '0') ?? 0;
-      int combinadoValor = int.tryParse(juego['combinadoApuesta'] ?? '0') ?? 0;
+      double apuestaValor = double.tryParse(juego['apuesta'] ?? '0') ?? 0;
+      double combinadoValor = double.tryParse(juego['combinadoApuesta'] ?? '0') ?? 0;
 
       apuesta += apuestaValor;
       apuesta += combinadoValor;
     }
     return apuesta * widget.sorteosSeleccionados.length;
   }
-
 
   bool validarTelefono() {
     String telefono = _telefonoController.text.toString().trim();
@@ -571,7 +572,7 @@ class JuegoScreenState extends State<JuegoScreen> {
                         color: colorPrincipal,
                       ),
                       Text(
-                        'TOTAL: ${formatoMoneda.format(totalApuesta())}',
+                        'TOTAL: ${usFormatter.format(totalApuesta())}',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       )
