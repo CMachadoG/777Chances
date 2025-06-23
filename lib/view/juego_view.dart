@@ -87,7 +87,7 @@ class JuegoScreenState extends State<JuegoScreen> {
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
-                                  '+57',
+                                  '+507',
                                   style: TextStyle(
                                       color: Colors.black87,
                                       fontWeight: FontWeight.bold,
@@ -382,8 +382,8 @@ class JuegoScreenState extends State<JuegoScreen> {
 
   bool validarTelefono() {
     String telefono = _telefonoController.text.toString().trim();
-    if (telefono.length == 10) {
-      if (telefono[0] == '3') {
+    if (telefono.length == 8) {
+      if (telefono[0] == '6') {
         return true;
       } else {
         return false;

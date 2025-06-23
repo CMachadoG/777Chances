@@ -14,6 +14,7 @@ class VentasScreen extends StatefulWidget {
 class _VentasScreenState extends State<VentasScreen> {
   DateTime fechaDesde = DateTime.now().subtract(Duration(days: 1));
   DateTime fechaHasta = DateTime.now();
+  final NumberFormat usFormatter = NumberFormat.currency(locale: 'en_US', symbol: '\$', decimalDigits: 2);
 
   @override
   void initState() {
@@ -42,11 +43,6 @@ class _VentasScreenState extends State<VentasScreen> {
     }
   }
 
-  String _formatearMoneda(double valor) {
-    return NumberFormat.currency(
-            locale: 'es_CO', symbol: '\$', decimalDigits: 0)
-        .format(valor);
-  }
 
   void _consultarVentas() {
     final desde = DateFormat('dd/MM/yyyy').format(fechaDesde);
@@ -105,19 +101,19 @@ class _VentasScreenState extends State<VentasScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                      "V. Bruta    ${_formatearMoneda(ventasProv.ventas?.ventaBruta ?? 0)}",
+                      "V. Bruta    ${usFormatter.format(ventasProv.ventas?.ventaBruta ?? 0)}",
                       style: const TextStyle(
                           color: Colors.green,
                           fontSize: 18,
                           fontWeight: FontWeight.bold)),
                   Text(
-                      "V. Neta     ${_formatearMoneda(ventasProv.ventas?.ventaNeta ?? 0)}",
+                      "V. Neta     ${usFormatter.format(ventasProv.ventas?.ventaNeta ?? 0)}",
                       style: const TextStyle(
                           color: Colors.red,
                           fontSize: 18,
                           fontWeight: FontWeight.bold)),
                   Text(
-                      "Ganancia    ${_formatearMoneda(ventasProv.ventas?.ganancia ?? 0)}",
+                      "Ganancia    ${usFormatter.format(ventasProv.ventas?.ganancia ?? 0)}",
                       style: const TextStyle(
                           color: Colors.green,
                           fontSize: 18,
@@ -135,9 +131,20 @@ class _VentasScreenState extends State<VentasScreen> {
           if (ventasProv.error != null)
             Padding(
               padding: const EdgeInsets.all(20),
-              child: Text("Error: ${ventasProv.error}",
-                  style: const TextStyle(color: Colors.red)),
+              child: Text(
+                ventasProv.error!.contains("type 'Null' is not a subtype")
+                    ? ''
+                    : 'Error: ${ventasProv.error}',
+                style: TextStyle(
+                  color: ventasProv.error!.contains("type 'Null' is not a subtype")
+                      ? Colors.black54
+                      : Colors.red,
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
+
           if (!ventasProv.loading)
             Expanded(
               child: ListView.builder(
@@ -171,7 +178,7 @@ class _VentasScreenState extends State<VentasScreen> {
                                   color: colorPrincipal,
                                   fontWeight: FontWeight.bold)),
                           const SizedBox(height: 5),
-                          Text("Valor: ${_formatearMoneda(venta.valorApuesta)}",
+                          Text("Valor: ${usFormatter.format  (venta.valorApuesta)}",
                               style: const TextStyle(
                                   color: Colors.blue,
                                   fontWeight: FontWeight.w500)),

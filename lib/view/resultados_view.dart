@@ -67,6 +67,8 @@ class _ResultadosScreenState extends State<ResultadosScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorPrincipal,
+        iconTheme: const IconThemeData(color: Colors.white),
+
       ),
       body: Column(
         children: [

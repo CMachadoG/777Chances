@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants.dart';
 import '../models/venta_model.dart';
 
 class VentasService {
@@ -13,7 +14,8 @@ class VentasService {
       throw Exception('Token o VendedorId no encontrados');
     }
 
-    final url = Uri.parse('https://api.777chan.com/api/ventas/vendedor');
+    const uri = url;
+    final urlApi = Uri.https(uri, '/api/ventas/vendedor');
 
     final Map<String, dynamic> body = {
       "FechaInicial": fechaInicio,
@@ -30,7 +32,7 @@ class VentasService {
     };
 
     final response = await http.post(
-      url,
+      urlApi,
       headers: headers,
       body: encodedBody,
     );
