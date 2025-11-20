@@ -1,5 +1,5 @@
 name: chances
-description: "Segunda version del proyecto de los chances"
+description: "Version española del proyecto de los chances"
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -64,7 +64,7 @@ dev_dependencies:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/images/icon.png"
+  image_path: "assets/images/logo.png"
 
 flutter:
 

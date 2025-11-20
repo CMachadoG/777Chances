@@ -29,8 +29,7 @@ class JuegoScreenState extends State<JuegoScreen> {
     TextEditingController()
   ];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final formatoMoneda =
-      NumberFormat.currency(locale: 'es_CO', symbol: '\$', decimalDigits: 0);
+  final NumberFormat esFormatter = NumberFormat.currency(locale: 'es_ES', symbol: '\€', decimalDigits: 2);
   String hintApuesta = "Apuesta";
 
   @override
@@ -88,7 +87,7 @@ class JuegoScreenState extends State<JuegoScreen> {
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Text(
-                                  '+57',
+                                  '+34',
                                   style: TextStyle(
                                       color: Colors.black87,
                                       fontWeight: FontWeight.bold,
@@ -203,7 +202,7 @@ class JuegoScreenState extends State<JuegoScreen> {
                     ),
                   ),
                   child: Text(
-                    "Apostar ${formatoMoneda.format(totalApuesta())}",
+                    "Apostar ${esFormatter.format(totalApuesta())}",
                     style: const TextStyle(color: Colors.white, fontSize: 25),
                   ),
                 ),
@@ -233,7 +232,8 @@ class JuegoScreenState extends State<JuegoScreen> {
               if (isNueva) {
                 if (_formKey.currentState?.validate() ?? false) {
                   final numero = _numeroControllers.last.text;
-                  final apuesta =(int.tryParse(_apuestaControllers.last.text) ?? 0);
+                  final apuesta =
+                  (int.tryParse(_apuestaControllers.last.text) ?? 0);
                   final combinado = _combinadoControllers.last.text;
 
                   final puedeGuardar = await validarTopes(
@@ -310,6 +310,7 @@ class JuegoScreenState extends State<JuegoScreen> {
 
   TextFormField inputApuesta(int index, bool isNueva) {
     return TextFormField(
+      inputFormatters: [ESCurrencyInputFormatter()],
       controller:
           isNueva ? _apuestaControllers.last : _apuestaControllers[index],
       style: const TextStyle(fontSize: 20),
@@ -318,9 +319,9 @@ class JuegoScreenState extends State<JuegoScreen> {
         hintText: 'Apuesta',
         helperText: '',
         focusColor: colorPrincipal,
-        prefixIcon: Icon(Icons.attach_money),
+        prefixIcon: Icon(Icons.euro),
         prefixIconColor: colorGrisSecundario,
-        prefixIconConstraints: BoxConstraints(maxWidth: 22, maxHeight: 23),
+        prefixIconConstraints: BoxConstraints(maxWidth: 35, maxHeight: 23),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: colorGrisSecundario,
@@ -342,6 +343,7 @@ class JuegoScreenState extends State<JuegoScreen> {
 
   TextFormField inputCombinado(int index, bool isNueva) {
     return TextFormField(
+      inputFormatters: [ESCurrencyInputFormatter()],
       controller:
           isNueva ? _combinadoControllers.last : _combinadoControllers[index],
       style: const TextStyle(fontSize: 20),
@@ -350,9 +352,9 @@ class JuegoScreenState extends State<JuegoScreen> {
         hintText: 'Combinado',
         helperText: '',
         focusColor: colorPrincipal,
-        prefixIcon: Icon(Icons.attach_money),
+        prefixIcon: Icon(Icons.euro),
         prefixIconColor: colorGrisSecundario,
-        prefixIconConstraints: BoxConstraints(maxWidth: 22, maxHeight: 23),
+        prefixIconConstraints: BoxConstraints(maxWidth: 35, maxHeight: 23),
         focusedBorder: UnderlineInputBorder(
           borderSide: BorderSide(
             color: colorGrisSecundario,
@@ -366,29 +368,38 @@ class JuegoScreenState extends State<JuegoScreen> {
     );
   }
 
-  int totalApuesta() {
-    int apuesta = 0;
-    for (var juego in juegos) {
-      int apuestaValor = int.tryParse(juego['apuesta'] ?? '0') ?? 0;
-      int combinadoValor = int.tryParse(juego['combinadoApuesta'] ?? '0') ?? 0;
+  double totalApuesta() {
+    double total = 0;
 
-      apuesta += apuestaValor;
-      apuesta += combinadoValor;
+    for (var juego in juegos) {
+      // extraer valores reales del formateador
+      String apuestaText = (juego['apuesta'] ?? '0')
+          .toString()
+          .replaceAll('.', '')
+          .replaceAll(',', '.');
+
+      String combinadoText = (juego['combinadoApuesta'] ?? '0')
+          .toString()
+          .replaceAll('.', '')
+          .replaceAll(',', '.');
+
+      double apuesta = double.tryParse(apuestaText) ?? 0;
+      double combinado = double.tryParse(combinadoText) ?? 0;
+
+      total += apuesta + combinado;
     }
-    return apuesta * widget.sorteosSeleccionados.length;
+
+    // multiplicar por cantidad de sorteos seleccionados
+    return total * widget.sorteosSeleccionados.length;
   }
 
 
   bool validarTelefono() {
     String telefono = _telefonoController.text.toString().trim();
-    if (telefono.length == 10) {
-      if (telefono[0] == '3') {
-        return true;
-      } else {
-        return false;
-      }
-    } else {
+    if (telefono.length != 9) {
       return false;
+    }else{
+      return true;
     }
   }
 
@@ -571,7 +582,7 @@ class JuegoScreenState extends State<JuegoScreen> {
                         color: colorPrincipal,
                       ),
                       Text(
-                        'TOTAL: ${formatoMoneda.format(totalApuesta())}',
+                        'TOTAL: ${esFormatter.format(totalApuesta())}',
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 18),
                       )

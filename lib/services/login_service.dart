@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chances/constants.dart';
-import 'package:chances/services/api_service.dart'; // aquí tienes tu interceptor
+import 'package:chances/services/api_service.dart';
 
 class LoginService {
   Future<void> login(String username, String password) async {
-    final uri = Uri.https(url, 'api/login/authenticate');
+    final uri = Uri.https(url, '/api/login/authenticate');
 
     final response = await http.post(
       uri,
